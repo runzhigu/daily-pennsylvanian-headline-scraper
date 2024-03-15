@@ -7,8 +7,7 @@ import os
 import sys
 
 import daily_event_monitor
-
-import bs4
+from bs4 import BeautifulSoup
 import requests
 import loguru
 
@@ -20,27 +19,17 @@ def scrape_data_point():
     Returns:
         str: The headline text if found, otherwise an empty string.
     """
+    print('hello')
     req = requests.get("https://www.thedp.com")
-    loguru.logger.info(f"Request URL: {req.url}")
+    loguru.logger.info(f"Request URL2: {req.url}")
     loguru.logger.info(f"Request status code: {req.status_code}")
-
-    # if req.ok:
-    #     soup = bs4.BeautifulSoup(req.text, "html.parser")
-    #     target_element = soup.find("a", class_="frontpage-link")
-    #     data_point = "" if target_element is None else target_element.text
-    #     loguru.logger.info(f"Data point: {data_point}")
-    #     return data_point
-
+    loguru.logger.info(f"is req ok:{req.ok}")
     if req.ok:
-        soup = bs4.BeautifulSoup(req.text, "html.parser")
-        mostRead_section = soup.find("span", id="mostRead")
-        print(mostRead_section)
-        if mostRead_section:
-            headline_elements = mostRead_section.find("a", class_="frontpage-link standard-link")
-            headlines = "" if headline_elements is None else headline_elements.text
+        soup=BeautifulSoup(req.text, "html.parser")
+        selected_text = soup.select_one("#content > div:nth-child(5) > div.col-sm-6.section-news > a.frontpage-link.medium-link.newstop")
 
-        loguru.logger.info(f"Headlines: {headlines}")
-        return headlines
+        loguru.logger.info(f"Headlines: {selected_text.text}")
+        return selected_text.text
 
 
 if __name__ == "__main__":
