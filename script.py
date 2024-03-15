@@ -34,6 +34,7 @@ def scrape_data_point():
     if req.ok:
         soup = bs4.BeautifulSoup(req.text, "html.parser")
         mostRead_section = soup.find("span", id="mostRead")
+        print(mostRead_section)
         if mostRead_section:
             headline_elements = mostRead_section.find("a", class_="frontpage-link standard-link")
             headlines = "" if headline_elements is None else headline_elements.text
